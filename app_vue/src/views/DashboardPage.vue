@@ -1,11 +1,14 @@
 <script setup>
 import factorizeMatrixForm from "@/components/FactorizeMatrixForm.vue";
+import OperateMatrixForm from "@/components/OperateMatrixForm.vue";
 import { useMatrix } from "@/composables/useMatrix.js";
+import { useOperationsMatrix } from "@/composables/useOperationsMatrix.js";
 
 const apiGoBaseURL = import.meta.env.VITE_API_GO_URL;
 const apiNodeBaseURL = import.meta.env.VITE_API_NODE_URL;
 
 const { factorizeMatrix } = useMatrix();
+const { operateMatrixFn } = useOperationsMatrix();
 
 const handleFactorizeMatrix = async (matrix) => {
   try {
@@ -13,17 +16,25 @@ const handleFactorizeMatrix = async (matrix) => {
   } catch (error) {
     alert("Error al factorizar la matriz:", error.message);
   }
-  return response.json();
+};
+
+const handleOperationMatrix = async (operation) => {
+  try {
+    const { Q, R } = operation;
+    await operateMatrixFn(Q, R);
+  } catch (error) {
+    alert("Error al operar con las matrices:", error.message);
+  }
 };
 </script>
 
 <template>
   <div class="dashboard-container">
     <div>
-      <h1>Reto Tecnico Interseguro</h1>
+      <h1>Reto Técnico Interseguro</h1>
       <h4>API RESTFUL GOLANG</h4>
       <p>
-        Documentacion:<a :href="`${apiGoBaseURL}/swagger`" target="_blank"
+        Documentación:<a :href="`${apiGoBaseURL}/swagger`" target="_blank"
           >Swagger</a
         >
       </p>
@@ -31,13 +42,14 @@ const handleFactorizeMatrix = async (matrix) => {
     <div>
       <h4>API RESTFUL NODE</h4>
       <p>
-        Documentacion:<a :href="`${apiNodeBaseURL}/api-docs`" target="_blank"
+        Documentación:<a :href="`${apiNodeBaseURL}/api-docs`" target="_blank"
           >Swagger</a
         >
       </p>
     </div>
     <h2>Ingreso de Matriz</h2>
-    <factorizeMatrixForm @send="handleFactorizeMatrix" />
+    <factorizeMatrixForm @factorizeMatrix="handleFactorizeMatrix" />
+    <OperateMatrixForm @operationMatrix="handleOperationMatrix" />
   </div>
 </template>
 

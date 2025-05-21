@@ -11,17 +11,24 @@ app.use(express.json());
 
 app.use(morgan("dev"));
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-    exposedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    optionsSuccessStatus: 200,
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+const app_local = process.env.APP_VUE_LOCAL;
+const app_prod = process.env.APP_VUE_PROD;
+
+const allowedOrigins = [app_local, app_prod];
+
+const corsOptions = {
+  origin: (origin: any, callback: any) => {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.send(

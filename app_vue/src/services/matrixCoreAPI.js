@@ -1,8 +1,12 @@
 import { createAxiosInstance } from "@/lib/axios";
 
-const API_INSTANCE_GO = createAxiosInstance({
+const apiGo = createAxiosInstance({
   baseURL: import.meta.env.VITE_API_GO_URL,
 });
 
-export const factorizeQR = (matrix) =>
-  API_INSTANCE_GO.post("/api/private/matrix/qr", { matrix });
+export const factorizeQR = async (matrix) => {
+  const response = await apiGo.post("/api/private/matrix/qr", {
+    matrix: JSON.parse(matrix.matrix),
+  });
+  return response.data;
+};

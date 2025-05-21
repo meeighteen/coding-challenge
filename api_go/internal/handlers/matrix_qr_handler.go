@@ -25,7 +25,10 @@ func MatrixQR(c *fiber.Ctx) error {
 	var req MatrixRequest
 
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Datos inválidos"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "Datos inválidos o mal formateados",
+			"details": err.Error(),
+		})
 	}
 
 	// Convertir la matriz JSON a una matriz Gonum
